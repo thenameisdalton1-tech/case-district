@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +25,8 @@ main{max-width:1000px;margin:45px auto;padding:20px}
 h1{font-size:36px;margin-bottom:10px}
 .price{font-size:25px;font-weight:bold}
 .description{color:#555;line-height:1.7}
+select{width:100%;padding:14px;border:1px solid #ccc;border-radius:6px;font-size:16px;margin-top:8px;background:white}
+label{display:block;font-weight:bold;margin-top:20px}
 .button{width:100%;margin-top:20px}
 #message{color:#167443;margin-top:12px}
 footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50px}
@@ -36,19 +39,22 @@ footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50p
 <a class="back" href="index.html">← Back to Store</a>
 <button onclick="location.href='index.html#cart'">Cart</button>
 </header>
+
 <main>
 <div class="product-layout" id="details">Loading product...</div>
 </main>
+
 <footer>Show your personality every day, everywhere. 📱</footer>
+
 <script>
 const products={
 clear_magsafe:{
 name:"Clear MagSafe",price:9.99,style:"clear",
-description:"A clear,simple phone case that protects your phone while still expressing the originial phone color."
+description:"A clear, simple phone case that protects your phone while still showing its original color."
 },
 matte_color:{
 name:"Matte Color",price:10.99,style:"colored",
-description:"A skeek smooth MagSafe case that will protect with style."
+description:"A sleek, smooth MagSafe case that protects your phone with style."
 },
 colored_edge:{
 name:"Colored Edge",price:11.99,style:"colored",
@@ -59,26 +65,73 @@ name:"Carbon Fiber",price:13.99,style:"carbon",
 description:"Feel rich for the price of cheap."
 }
 };
+
+const phoneModels=[
+"iPhone 16",
+"iPhone 16 Plus",
+"iPhone 16 Pro",
+"iPhone 16 Pro Max",
+"iPhone 17",
+"iPhone 17 Pro",
+"iPhone 17 Pro Max",
+"iPhone 18",
+"iPhone 18 Plus",
+"iPhone 18 Pro",
+"iPhone 18 Pro Max"
+];
+
 const id=new URLSearchParams(location.search).get("id");
 const product=products[id];
+
 function addToCart(){
+const model=document.getElementById("phoneModel").value;
+
+if(!model){
+document.getElementById("message").textContent="Please select your iPhone model.";
+return;
+}
+
 let cart=JSON.parse(localStorage.getItem("caseDistrictCart")||"[]");
-const item=cart.find(x=>x.id===id);
-if(item)item.quantity++;
-else cart.push({id,name:product.name,price:product.price,quantity:1});
+
+const item=cart.find(x=>x.id===id && x.model===model);
+
+if(item){
+item.quantity++;
+}else{
+cart.push({
+id:id,
+name:product.name,
+price:product.price,
+model:model,
+quantity:1
+});
+}
+
 localStorage.setItem("caseDistrictCart",JSON.stringify(cart));
 document.getElementById("message").textContent="Added to your cart!";
 }
+
 if(!product){
 document.getElementById("details").textContent="Sorry, this product could not be found.";
 }else{
 document.title=product.name+" | Case District";
+
 document.getElementById("details").innerHTML=`
-<div class="case-art"><div class="phone-case ${product.style}"></div></div>
+<div class="case-art">
+<div class="phone-case ${product.style}"></div>
+</div>
+
 <div>
 <h1>${product.name}</h1>
 <p class="price">$${product.price.toFixed(2)}</p>
 <p class="description">${product.description}</p>
+
+<label for="phoneModel">Choose Your iPhone Model</label>
+<select id="phoneModel" required>
+<option value="">Select your phone model</option>
+${phoneModels.map(model=>`<option value="${model}">${model}</option>`).join("")}
+</select>
+
 <button class="button" onclick="addToCart()">Add to Cart</button>
 <p id="message"></p>
 <a href="index.html#cart">View your cart</a>
