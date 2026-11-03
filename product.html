@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Details | Case District</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f7f7f7;color:#171717}
+header{background:#111;color:white;padding:24px 7%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:25px;font-weight:800;letter-spacing:2px;color:white;text-decoration:none}
+header a.back{color:white;text-decoration:none}
+header button,.button{border:0;border-radius:6px;padding:13px;background:#111;color:white;font-weight:bold;cursor:pointer}
+header button{background:white;color:#111}
+main{max-width:1000px;margin:45px auto;padding:20px}
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center;background:white;padding:30px;border-radius:14px}
+.case-art{height:390px;border-radius:12px;background:#eee;display:flex;align-items:center;justify-content:center}
+.phone-case{width:155px;height:280px;border:6px solid #222;border-radius:30px;position:relative;box-shadow:0 10px 25px #0003}
+.phone-case:before{content:"";position:absolute;top:17px;left:17px;width:48px;height:48px;border:5px solid #555;border-radius:14px}
+.clear{background:#dce7e5}.navy{background:#172d4b}
+.colored{background:linear-gradient(135deg,#f5a1a1,#e9c1f5)}
+.carbon{background:repeating-linear-gradient(45deg,#202020,#202020 5px,#383838 5px,#383838 10px)}
+h1{font-size:36px;margin-bottom:10px}
+.price{font-size:25px;font-weight:bold}
+.description{color:#555;line-height:1.7}
+.button{width:100%;margin-top:20px}
+#message{color:#167443;margin-top:12px}
+footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50px}
+@media(max-width:700px){.product-layout{grid-template-columns:1fr}.case-art{height:300px}}
+</style>
+</head>
+<body>
+<header>
+<a class="logo" href="index.html">CASE DISTRICT</a>
+<a class="back" href="index.html">← Back to Store</a>
+<button onclick="location.href='index.html#cart'">Cart</button>
+</header>
+
+<main>
+<div class="product-layout" id="details">
+Loading product...
+</div>
+</main>
+<footer>© 2026 Case District. All rights reserved.</footer>
+
+<script>
+const products={
+classic_clear:{
+name:"Classic Clear",price:9.99,style:"clear",
+description:"A clean, simple clear case that lets your phone's original design show through. A classic everyday look."
+},
+matte_navy:{
+name:"Matte Navy",price:10.99,style:"navy",
+description:"A sleek navy case with a smooth, understated matte look. A simple way to give your phone a fresh style."
+},
+colored_edge:{
+name:"Colored Edge",price:11.99,style:"colored",
+description:"A colorful case design that adds a little personality to your everyday style."
+},
+carbon_fiber:{
+name:"Carbon Fiber",price:13.99,style:"carbon",
+description:"A dark carbon-fiber-inspired design for a bold, modern look."
+}
+};
+
+const id=new URLSearchParams(location.search).get("id");
+const product=products[id];
+
+function addToCart(){
+let cart=JSON.parse(localStorage.getItem("caseDistrictCart")||"[]");
+const item=cart.find(x=>x.id===id);
+if(item)item.quantity++;
+else cart.push({id,name:product.name,price:product.price,quantity:1});
+localStorage.setItem("caseDistrictCart",JSON.stringify(cart));
+document.getElementById("message").textContent="Added to your cart!";
+}
+
+if(!product){
+document.getElementById("details").textContent="Sorry, this product could not be found.";
+}else{
+document.title=product.name+" | Case District";
+document.getElementById("details").innerHTML=`
+<div class="case-art"><div class="phone-case ${product.style}"></div></div>
+<div>
+<h1>${product.name}</h1>
+<p class="price">$${product.price.toFixed(2)}</p>
+<p class="description">${product.description}</p>
+<button class="button" onclick="addToCart()">Add to Cart</button>
+<p id="message"></p>
+<a href="index.html#cart">View your cart</a>
+</div>`;
+}
+</script>
+</body>
+</html>
