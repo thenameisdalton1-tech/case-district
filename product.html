@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +18,7 @@ main{max-width:1000px;margin:45px auto;padding:20px}
 .case-art{height:390px;border-radius:12px;background:#eee;display:flex;align-items:center;justify-content:center}
 .phone-case{width:155px;height:280px;border:6px solid #222;border-radius:30px;position:relative;box-shadow:0 10px 25px #0003}
 .phone-case:before{content:"";position:absolute;top:17px;left:17px;width:48px;height:48px;border:5px solid #555;border-radius:14px}
-.clear{background:#dce7e5}.navy{background:#172d4b}
+.clear{background:#dce7e5}
 .colored{background:linear-gradient(135deg,#f5a1a1,#e9c1f5)}
 .carbon{background:repeating-linear-gradient(45deg,#202020,#202020 5px,#383838 5px,#383838 10px)}
 h1{font-size:36px;margin-bottom:10px}
@@ -37,21 +36,17 @@ footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50p
 <a class="back" href="index.html">← Back to Store</a>
 <button onclick="location.href='index.html#cart'">Cart</button>
 </header>
-
 <main>
-<div class="product-layout" id="details">
-Loading product...
-</div>
+<div class="product-layout" id="details">Loading product...</div>
 </main>
-<footer> Show your personality every day, everywhere. 📱 </footer>
-
+<footer>Show your personality every day, everywhere. 📱</footer>
 <script>
 const products={
-Clear_MagSafe:{
+clear_magsafe:{
 name:"Clear MagSafe",price:9.99,style:"clear",
 description:"A clear,simple phone case that protects your phone while still expressing the originial phone color."
 },
-Matte_Color:{
+matte_color:{
 name:"Matte Color",price:10.99,style:"colored",
 description:"A skeek smooth MagSafe case that will protect with style."
 },
@@ -64,10 +59,8 @@ name:"Carbon Fiber",price:13.99,style:"carbon",
 description:"Feel rich for the price of cheap."
 }
 };
-
 const id=new URLSearchParams(location.search).get("id");
 const product=products[id];
-
 function addToCart(){
 let cart=JSON.parse(localStorage.getItem("caseDistrictCart")||"[]");
 const item=cart.find(x=>x.id===id);
@@ -76,7 +69,6 @@ else cart.push({id,name:product.name,price:product.price,quantity:1});
 localStorage.setItem("caseDistrictCart",JSON.stringify(cart));
 document.getElementById("message").textContent="Added to your cart!";
 }
-
 if(!product){
 document.getElementById("details").textContent="Sorry, this product could not be found.";
 }else{
