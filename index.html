@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Case District | iPhone Cases</title>
 <link rel="icon" type="image/png" href="favicon.png">
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f7f7f7;color:#171717}
@@ -15,6 +17,25 @@ header button{background:white;color:#111}
 .hero{text-align:center;padding:65px 20px;background:#e9e9e9}
 .hero h1{font-size:clamp(34px,6vw,55px);margin:0 0 12px}
 main{padding:35px 7%}
+
+.model-selector{
+background:white;
+padding:22px;
+border-radius:12px;
+margin-bottom:30px;
+box-shadow:0 3px 14px #0000000d;
+}
+.model-selector label{display:block;font-weight:bold;margin-bottom:12px}
+#iphone-model{
+width:100%;
+padding:14px;
+border:1px solid #ccc;
+border-radius:7px;
+font-size:16px;
+background:white;
+}
+#model-message{color:#b00020;margin-top:10px;font-size:14px}
+
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
 .product{background:white;border-radius:12px;padding:18px;box-shadow:0 3px 14px #0000000d}
 .case-art{height:210px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:#eee;text-decoration:none}
@@ -28,13 +49,15 @@ main{padding:35px 7%}
 .product h3 a:hover{text-decoration:underline}
 .price{font-weight:bold;font-size:19px}
 .button{width:100%;margin-top:10px}
+.button:disabled{opacity:.45;cursor:not-allowed}
+
 .cart-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #ddd}
 .cart-item button{padding:5px 10px;cursor:pointer}
 #total{font-size:21px;font-weight:bold;margin-top:20px}
 #checkout{background:#167443}
 #checkout:disabled{opacity:.5;cursor:not-allowed}
 #message{margin-top:12px;color:#b00020}
-/* Cart popup */
+
 #cart-overlay{
 display:none;
 position:fixed;
@@ -56,38 +79,49 @@ padding:25px;
 border-radius:14px;
 box-shadow:0 10px 40px #0004;
 }
-.cart-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+.cart-header{display:flex;justify-content:space-between;align-items:center}
 .cart-header h2{margin:0}
-#close-cart{
-background:transparent;
-border:0;
-font-size:28px;
-cursor:pointer;
-color:#111;
-}
+#close-cart{background:transparent;border:0;font-size:28px;cursor:pointer;color:#111}
 footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50px}
 </style>
 </head>
+
 <body>
+
 <header>
 <a class="logo" href="index.html">CASE DISTRICT</a>
 <button onclick="openCart()">
 Cart (<span id="cart-count">0</span>)
 </button>
 </header>
+
 <section class="hero">
 <h1>Find Your Case.</h1>
 <p>Simple style. Everyday protection.</p>
 </section>
+
 <main>
+
 <h2>Shop Our Cases</h2>
+
+<div class="model-selector">
+<label for="iphone-model">Choose Your iPhone Model *</label>
+
+<select id="iphone-model" required onchange="selectModel()">
+<option value="">Select your iPhone model</option>
+<option value="iPhone 17 Pro">iPhone 17 Pro</option>
+<option value="iPhone 17 Pro Max">iPhone 17 Pro Max</option>
+<option value="iPhone 18 Pro">iPhone 18 Pro</option>
+<option value="iPhone 18 Pro Max">iPhone 18 Pro Max</option>
+</select>
+
+<p id="model-message">Please select your iPhone model before shopping.</p>
+</div>
+
 <div class="products" id="products"></div>
+
 </main>
-<!-- Cart popup -->
+
 <div id="cart-overlay" onclick="overlayClick(event)">
 <section id="cart">
 <div class="cart-header">
@@ -100,103 +134,209 @@ Cart (<span id="cart-count">0</span>)
 <p id="message"></p>
 </section>
 </div>
+
 <footer>
 <p>Show your personality every day, everywhere. 📱</p>
 </footer>
+
 <script>
+
 const WORKER_URL="https://case-district-checkout.casedistrictcases.workers.dev";
+
 const products=[
-{id:"clear_magsafe",name:"Clear MagSafe",price:9.99,style:"clear",description:"A clear,simple phone case that protects your phone while still expressing the originial phone color."},
-{id:"matte_color",name:"Matte Color",price:10.99,style:"colored",description:"A skeek smooth MagSafe case that will protect with style."},
-{id:"colored_edge",name:"Colored Edge",price:11.99,style:"colored",description:"A colorful design that helps show who you are every day."},
-{id:"carbon_fiber",name:"Carbon Fiber",price:13.99,style:"carbon",description:"Feel rich for the price of cheap."}
+{id:"clear_magsafe",name:"Clear MagSafe",price:9.99,style:"clear",description:"A clear, simple phone case."},
+{id:"matte_color",name:"Matte Color",price:10.99,style:"colored",description:"A smooth MagSafe case."},
+{id:"colored_edge",name:"Colored Edge",price:11.99,style:"colored",description:"A colorful protective case."},
+{id:"carbon_fiber",name:"Carbon Fiber",price:13.99,style:"carbon",description:"A carbon fiber style case."}
 ];
+
 let cart=JSON.parse(localStorage.getItem("caseDistrictCart")||"[]");
+
+let selectedModel=localStorage.getItem("caseDistrictModel")||"";
+
+const modelSelect=document.getElementById("iphone-model");
+
+modelSelect.value=selectedModel;
+
+function selectModel(){
+selectedModel=modelSelect.value;
+localStorage.setItem("caseDistrictModel",selectedModel);
+
+document.getElementById("model-message").textContent=
+selectedModel ? "Selected: "+selectedModel : "Please select your iPhone model before shopping.";
+
+displayProducts();
+}
+
 function openCart(){
 document.getElementById("cart-overlay").classList.add("open");
 document.body.style.overflow="hidden";
 }
+
 function closeCart(){
 document.getElementById("cart-overlay").classList.remove("open");
 document.body.style.overflow="";
 }
+
 function overlayClick(event){
 if(event.target.id==="cart-overlay")closeCart();
 }
+
 document.addEventListener("keydown",function(event){
 if(event.key==="Escape")closeCart();
 });
+
 function saveCart(){
 localStorage.setItem("caseDistrictCart",JSON.stringify(cart));
 }
+
 function displayProducts(){
+
 document.getElementById("products").innerHTML=products.map(p=>`
+
 <div class="product">
-<a class="case-art" href="product.html?id=${p.id}" aria-label="View ${p.name}">
+<a class="case-art" href="product.html?id=${p.id}">
 <div class="phone-case ${p.style}"></div>
 </a>
+
 <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
+<p>${p.description}</p>
 <p class="price">$${p.price.toFixed(2)}</p>
-<button class="button" onclick="addToCart('${p.id}')">Add to Cart</button>
-</div>`).join("");
+
+<button class="button"
+${selectedModel ? "" : "disabled"}
+onclick="addToCart('${p.id}')">
+${selectedModel ? "Add to Cart" : "Choose Model First"}
+</button>
+
+</div>
+
+`).join("");
+
 }
+
 function addToCart(id){
+
+if(!selectedModel){
+alert("Please select your iPhone model first.");
+return;
+}
+
 const p=products.find(x=>x.id===id);
 if(!p)return;
-const existing=cart.find(x=>x.id===id);
-if(existing)existing.quantity++;
-else cart.push({id:p.id,name:p.name,price:p.price,quantity:1});
+
+const existing=cart.find(x=>x.id===id&&x.model===selectedModel);
+
+if(existing){
+existing.quantity++;
+}else{
+cart.push({
+id:p.id,
+name:p.name,
+price:p.price,
+model:selectedModel,
+quantity:1
+});
+}
+
 saveCart();
 renderCart();
+
 }
-function changeQuantity(id,amount){
-const item=cart.find(x=>x.id===id);
+
+function changeQuantity(id,model,amount){
+
+const item=cart.find(x=>x.id===id&&x.model===model);
 if(!item)return;
+
 item.quantity+=amount;
-if(item.quantity<=0)cart=cart.filter(x=>x.id!==id);
+
+if(item.quantity<=0){
+cart=cart.filter(x=>!(x.id===id&&x.model===model));
+}
+
 saveCart();
 renderCart();
+
 }
+
 function renderCart(){
+
 const count=cart.reduce((s,x)=>s+x.quantity,0);
 const total=cart.reduce((s,x)=>s+x.price*x.quantity,0);
+
 document.getElementById("cart-count").textContent=count;
 document.getElementById("total").textContent="Total: $"+total.toFixed(2);
 document.getElementById("checkout").disabled=cart.length===0;
-document.getElementById("cart-items").innerHTML=cart.length?cart.map(x=>`
+
+document.getElementById("cart-items").innerHTML=cart.length?
+cart.map(x=>`
+
 <div class="cart-item">
-<span>${x.name} — $${x.price.toFixed(2)}</span>
 <span>
-<button onclick="changeQuantity('${x.id}',-1)">−</button>
-${x.quantity}
-<button onclick="changeQuantity('${x.id}',1)">+</button>
+${x.name}<br>
+${x.model}<br>
+$${x.price.toFixed(2)}
 </span>
-</div>`).join(""):"Your cart is empty.";
+
+<span>
+<button onclick="changeQuantity('${x.id}','${x.model}',-1)">−</button>
+${x.quantity}
+<button onclick="changeQuantity('${x.id}','${x.model}',1)">+</button>
+</span>
+</div>
+
+`).join(""):"Your cart is empty.";
+
 }
+
 async function checkout(){
+
 const button=document.getElementById("checkout");
 const message=document.getElementById("message");
+
 if(!cart.length)return;
+
 button.disabled=true;
 button.textContent="Connecting to checkout...";
 message.textContent="";
+
 try{
+
 const response=await fetch(WORKER_URL,{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({items:cart.map(x=>({id:x.id,quantity:x.quantity}))})
+body:JSON.stringify({
+items:cart.map(x=>({
+id:x.id,
+quantity:x.quantity,
+model:x.model
+}))
+})
 });
+
 const data=await response.json();
-if(!response.ok||!data.url)throw new Error(data.error||"Checkout could not be started.");
+
+if(!response.ok||!data.url){
+throw new Error(data.error||"Checkout could not be started.");
+}
+
 window.location.href=data.url;
+
 }catch(error){
+
 message.textContent=error.message;
 button.disabled=false;
 button.textContent="Continue to Checkout";
+
 }
+
 }
+
 displayProducts();
 renderCart();
+
 </script>
+
 </body>
 </html>
