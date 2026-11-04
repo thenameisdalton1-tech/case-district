@@ -73,10 +73,13 @@ footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50p
 
 <select id="iphone-model" required onchange="selectModel()">
 <option value="">Select your iPhone model</option>
+<option value="iPhone 16">iPhone 16</option>
 <option value="iPhone 16 Pro">iPhone 16 Pro</option>
 <option value="iPhone 16 Pro Max">iPhone 16 Pro Max</option>
+<option value="iPhone 17">iPhone 17</option>
 <option value="iPhone 17 Pro">iPhone 17 Pro</option>
 <option value="iPhone 17 Pro Max">iPhone 17 Pro Max</option>
+<option value="iPhone 18">iPhone 18</option>
 <option value="iPhone 18 Pro">iPhone 18 Pro</option>
 <option value="iPhone 18 Pro Max">iPhone 18 Pro Max</option>
 </select>
@@ -121,7 +124,6 @@ const products=[
 ];
 
 let cart=JSON.parse(localStorage.getItem("caseDistrictCart")||"[]");
-
 let selectedModel=localStorage.getItem("caseDistrictModel")||"";
 
 const modelSelect=document.getElementById("iphone-model");
@@ -129,7 +131,6 @@ modelSelect.value=selectedModel;
 
 function selectModel(){
 selectedModel=modelSelect.value;
-
 localStorage.setItem("caseDistrictModel",selectedModel);
 
 document.getElementById("model-message").textContent=
@@ -163,10 +164,8 @@ localStorage.setItem("caseDistrictCart",JSON.stringify(cart));
 }
 
 function displayProducts(){
-
 document.getElementById("products").innerHTML=products.map(p=>`
 <div class="product">
-
 <a class="case-art" href="product.html?id=${p.id}">
 <div class="phone-case ${p.style}"></div>
 </a>
@@ -180,14 +179,11 @@ ${selectedModel?"":"disabled"}
 onclick="addToCart('${p.id}')">
 ${selectedModel?"Add to Cart":"Choose Model First"}
 </button>
-
 </div>
 `).join("");
-
 }
 
 function addToCart(id){
-
 if(!selectedModel){
 alert("Please select your iPhone model first.");
 return;
@@ -215,7 +211,6 @@ renderCart();
 }
 
 function changeQuantity(id,model,amount){
-
 const item=cart.find(x=>x.id===id&&x.model===model);
 if(!item)return;
 
@@ -230,7 +225,6 @@ renderCart();
 }
 
 function renderCart(){
-
 const count=cart.reduce((s,x)=>s+x.quantity,0);
 const total=cart.reduce((s,x)=>s+x.price*x.quantity,0);
 
@@ -246,7 +240,6 @@ ${x.name}<br>
 ${x.model}<br>
 $${x.price.toFixed(2)}
 </span>
-
 <span>
 <button onclick="changeQuantity('${x.id}','${x.model}',-1)">−</button>
 ${x.quantity}
@@ -254,11 +247,9 @@ ${x.quantity}
 </span>
 </div>
 `).join(""):"Your cart is empty.";
-
 }
 
 async function checkout(){
-
 const button=document.getElementById("checkout");
 const message=document.getElementById("message");
 
@@ -269,7 +260,6 @@ button.textContent="Connecting to checkout...";
 message.textContent="";
 
 try{
-
 const response=await fetch(WORKER_URL,{
 method:"POST",
 headers:{"Content-Type":"application/json"},
@@ -291,13 +281,10 @@ throw new Error(data.error||"Checkout could not be started.");
 window.location.href=data.url;
 
 }catch(error){
-
 message.textContent=error.message;
 button.disabled=false;
 button.textContent="Continue to Checkout";
-
 }
-
 }
 
 displayProducts();
