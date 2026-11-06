@@ -26,6 +26,7 @@ main{padding:35px 7%}
 .product{background:white;border-radius:12px;padding:18px;box-shadow:0 3px 14px #0000000d}
 .case-art{height:210px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:#eee;text-decoration:none}
 .phone-case{width:105px;height:175px;border:5px solid #222;border-radius:23px;position:relative;box-shadow:0 7px 15px #0002}
+.product-image{max-width:100%;max-height:190px;object-fit:contain;display:block}
 .phone-case:before{content:"";position:absolute;top:12px;left:12px;width:35px;height:35px;border:4px solid #555;border-radius:12px}
 .clear{background:#dce7e5}
 .colored{background:linear-gradient(135deg,#f5a1a1,#e9c1f5)}
@@ -108,7 +109,7 @@ footer{text-align:center;padding:30px;background:#111;color:white;margin-top:50p
 const WORKER_URL = "https://case-district-checkout.casedistrictcases.workers.dev";
 
 const products = [
-{id:"clear_magsafe",name:"Clear MagSafe",price:9.99,style:"clear",description:"A clear, simple phone case that protects your phone."},
+{id:"clear_magsafe",name:"Clear MagSafe",price:9.99,style:"clear",image:"clear-magsafe.png",description:"A clear, simple phone case that protects your phone."},
 {id:"matte_color",name:"Matte Color",price:10.99,style:"colored",description:"A smooth MagSafe case that protects with style."},
 {id:"colored_edge",name:"Colored Edge",price:11.99,style:"colored",description:"A colorful design that shows your personality."},
 {id:"carbon_fiber",name:"Carbon Fiber",price:13.99,style:"carbon",description:"A carbon fiber style case."}
@@ -212,7 +213,7 @@ function displayProducts() {
 productsContainer.innerHTML = products.map(p => `
 <div class="product">
 <a class="case-art" href="product.html?id=${encodeURIComponent(p.id)}">
-<div class="phone-case ${p.style}"></div>
+${p.image ? `<img class="product-image" src="${p.image}" alt="${p.name}">` : `<div class="phone-case ${p.style}"></div>`}
 </a>
 <h3><a href="product.html?id=${encodeURIComponent(p.id)}">${p.name}</a></h3>
 <p>${p.description}</p>
