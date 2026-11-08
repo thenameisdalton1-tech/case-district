@@ -7,10 +7,8 @@
 <meta name="theme-color" content="#111111">
 
 <title>Case District | Stylish iPhone Cases & MagSafe Cases</title>
-
 <meta name="description" content="Shop Case District for stylish iPhone cases, including clear MagSafe, matte color, colored edge, and carbon fiber designs.">
 <meta name="robots" content="index, follow">
-
 <link rel="canonical" href="https://casedistrict.net/">
 <link rel="icon" type="image/png" href="favicon.png">
 
@@ -73,9 +71,7 @@ font-size:clamp(34px,6vw,55px);
 margin:0 0 12px
 }
 
-main{
-padding:35px 7%
-}
+main{padding:35px 7%}
 
 .model-selector{
 background:white;
@@ -130,9 +126,7 @@ text-decoration:none;
 overflow:hidden
 }
 
-.case-art.clear-art{
-background:#fff
-}
+.case-art.clear-art{background:#fff}
 
 .case-photo{
 width:100%;
@@ -169,7 +163,9 @@ background:linear-gradient(135deg,#f5a1a1,#e9c1f5)
 }
 
 .carbon{
-background:repeating-linear-gradient(45deg,#202020,#202020 5px,#383838 5px,#383838 10px)
+background:repeating-linear-gradient(
+45deg,#202020,#202020 5px,#383838 5px,#383838 10px
+)
 }
 
 .product h3 a{
@@ -286,9 +282,7 @@ text-decoration:none;
 font-size:14px
 }
 
-.footer-links a:hover{
-text-decoration:underline
-}
+.footer-links a:hover{text-decoration:underline}
 
 .copyright{
 font-size:12px;
@@ -347,7 +341,6 @@ Please select your iPhone model before shopping.
 
 <div class="cart-header">
 <h2>Your Shopping Cart</h2>
-
 <button id="close-cart" type="button"
 aria-label="Close cart" onclick="closeCart()">×</button>
 </div>
@@ -374,6 +367,8 @@ Continue to Checkout
 <a href="shipping.html">Shipping Policy</a>
 <a href="returns.html">Returns Policy</a>
 <a href="contact.html">Contact Us</a>
+<a href="terms.html">Terms & Conditions</a>
+<a href="privacy.html">Privacy Policy</a>
 </div>
 
 <p class="copyright">
@@ -454,7 +449,6 @@ Number.isInteger(item.quantity) &&
 item.quantity>0 &&
 products.some(p=>p.id===item.id)
 );
-
 }catch(error){
 return [];
 }
@@ -645,7 +639,6 @@ $${x.price.toFixed(2)}
 </span>
 
 <span>
-
 <button type="button"
 aria-label="Remove one ${x.name}"
 onclick="changeQuantity('${x.id}','${x.model}',-1)">−</button>
@@ -655,7 +648,6 @@ ${x.quantity}
 <button type="button"
 aria-label="Add one ${x.name}"
 onclick="changeQuantity('${x.id}','${x.model}',1)">+</button>
-
 </span>
 
 </div>
